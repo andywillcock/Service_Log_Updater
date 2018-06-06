@@ -33,6 +33,14 @@ biw = biw.rename(index=str, columns={'Study':'Study ID'})
 agg_file = fileopenbox(msg="Select SO Aggregate Performance Report")
 agg = pd.read_excel(agg_file, sheet_name=0, header=0, skiprows=5)
 agg = agg.rename(index=str, columns={'SID' : 'Study ID'})
+agg = agg[['Study ID','PFSAD','PLSE','PrLSE']]
+agg = agg.astype(str)
+agg = agg.replace('--', '')
+for col in ['PFSAD','PLSE','PrLSE']:
+    for i in range(len(agg)):
+        if agg[col][i] != '' and agg[col][i] != 'nan':
+            agg[col][i] = datetime.strptime(agg[col][i], '%d-%b-%Y')
+            agg[col][i] = agg[col][i].date()
 
 in_study_list = []
 for row in range(len(so)):
